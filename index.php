@@ -27,10 +27,16 @@ include "header.php";
                     <option value="">Choisir un menu</option>
 
                     <?php 
+                    try {
                     $query = "SELECT * FROM menu";
                     $result = $db->prepare($query);
                     $result->execute();
                     $row = $result->fetchAll(PDO::FETCH_ASSOC);
+                    } catch (PDOException $e) {
+
+                        echo "Error : " . $e->getMessage();
+                
+                    }
                     foreach($row as $menu){
                     ?>
                     <option value="<?= $menu['nom_menu'] ?>"><?= $menu['nom_menu'] ?></option>
@@ -83,9 +89,15 @@ if(isset($_POST['submit'])){
 
     $infos = json_encode($arr);
 
+    try {
     $query = "INSERT INTO commandes (infos_commande) VALUES (?)";
     $result = $db->prepare($query);
     $result->execute([$infos]);
+    } catch (PDOException $e) {
+
+        echo "Error : " . $e->getMessage();
+
+    }
 
     ?>
 
@@ -101,10 +113,16 @@ if(isset($_POST['submit'])){
                 
                 $commandeId = $db->lastInsertId();
 
+                try {
                 $query = "SELECT infos_commande FROM commandes WHERE id_commande = :id";
                 $result = $db->prepare($query);
                 $result->execute(['id' => $commandeId]);
                 $row = $result->fetchColumn();
+                } catch (PDOException $e) {
+
+                    echo "Erreure : " . $e->getMessage();
+            
+                }
 
                 // echo $row;
 
